@@ -1,12 +1,12 @@
 function colorMode (color) {
   if (color.startsWith('#'))
     return {
-      input: 'hex',
-      output: 'rgb'
+      from: 'hex',
+      to: 'rgb'
     }
   return {
-    input: 'rgb',
-    output: 'hex'
+    from: 'rgb',
+    to: 'hex'
   };
 }
 

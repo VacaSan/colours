@@ -1,7 +1,6 @@
 import transform from './transform';
 import colorMode from './utils/color-mode';
 import luma from './utils/luma';
-import validate from './validate';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -52,20 +51,26 @@ class ColorApp extends HTMLElement {
   }
   handleChange (evt) {
     this.input = evt.target;
-    if (this.input.value == '')
+    const value = this.input.value;
+
+    if (value == '')
       return;
 
-    const value = this.input.value;
-    // make sure input value is valid hex or rgb
-    if (validate.hex(value) || validate.rgb(value)) {
-      this.output = this.input.nextElementSibling || this.input.previousElementSibling;
-      const color = transform[colorMode(value).input](value);
+    const mode = colorMode(value);
+    this.output =
+      this.input.nextElementSibling ||
+      this.input.previousElementSibling;
 
-      this.render(color);
+    try {
+      const color = transform[mode.from](value);
+      this.render(color, mode.to);
+    }
+    catch (error) {
+      console.warn(error.message);
     }
   }
-  render (color) {
-    const outputColor = color[colorMode(this.input.value).output];
+  render (color, mode) {
+    const outputColor = color[mode];
 
     this.output.value = outputColor;
     document.body.style.backgroundColor = outputColor;
