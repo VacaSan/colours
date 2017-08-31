@@ -24,7 +24,8 @@ function rgb (color) {
   if (!isValid.rgb(color)) {
     throw new InvalidColor('Invalid color: ' + color);
   }
-  var result = toArray.rgb(color).map(toHEX).join('');
+  var rgb = toArray.rgb(color);
+  var result = rgb.map(toHEX).join('');
   return {
     hex: '#' + result,
     rgb: color
@@ -37,7 +38,8 @@ function hex (color) {
   if (!isValid.hex(color)) {
     throw new InvalidColor('Invalid color: ' + color)
   }
-  var result = toArray.hex(color.slice(1)).map(toRGB).join(', ');
+  var hex = toArray.hex(color.slice(1));
+  var result = hex.map(toRGB).join(', ');
   return {
     hex: color,
     rgb: 'rgb(' + result + ')'
