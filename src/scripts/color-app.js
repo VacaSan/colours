@@ -56,14 +56,14 @@ class ColorApp extends HTMLElement {
     if (value == '')
       return;
 
-    const mode = colorMode(value);
+    const { from, to } = colorMode(value);
     this.output =
       this.input.nextElementSibling ||
       this.input.previousElementSibling;
 
     try {
-      const color = transform[mode.from](value);
-      this.render(color, mode.to);
+      const color = transform(value, from, to);
+      this.render(color, to);
     }
     catch (error) {
       console.warn(error.message);

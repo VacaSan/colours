@@ -9,6 +9,7 @@ function expand (color) {
 // creates an array of rgb values
 function hex (color) {
   var result = [];
+  color = color.slice(1);
   // expands hex if shorthand form
   if (color.length == 3)
     color = expand(color);
