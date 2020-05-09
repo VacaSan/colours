@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import { jsx, css } from "@emotion/core";
 import React from "react";
 import { parseToRgb, readableColor, rgb, toColorString } from "polished";
 
@@ -10,7 +12,10 @@ const white = {
 function App() {
   const [color, setColor] = React.useState(white);
 
-  const onChange = (evt) => {
+  /**
+   * @param {React.ChangeEvent<HTMLInputElement>} evt
+   */
+  const onChange = evt => {
     try {
       const nextColor = parseToRgb(evt.target.value);
       setColor(nextColor);
@@ -30,48 +35,96 @@ function App() {
   return (
     <React.Fragment>
       <h1
-        style={{
-          position: "fixed",
-          top: "1rem",
-          left: "1rem",
-          fontSize: 32,
-          fontWeight: 500,
-          lineHeight: 1.2,
-          margin: 0,
-        }}
+        css={css`
+          position: fixed;
+          top: 1rem;
+          left: 1rem;
+          font-size: 32px;
+          margin: 0;
+        `}
       >
         <span role="img" aria-label="unicorn">
           🦄
         </span>
       </h1>
       <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          width: "100vw",
-          height: "100vh",
-        }}
+        css={css`
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          width: 100vw;
+          height: 100vh;
+        `}
       >
-        <input
-          type="text"
-          onChange={onChange}
-          placeholder="hex/rgb(a)/hsl(a)"
-          style={{
-            display: "block",
-            width: "100%",
-            height: 48,
-            maxWidth: 320,
-            color: "inherit",
-            fontSize: "1.5rem",
-            background: "none",
-            border: 0,
-            borderBottom: "1px solid currentColor",
-          }}
-        />
+        <ColorInput onChange={onChange} />
       </div>
     </React.Fragment>
+  );
+}
+
+/**
+ * @param {object} props
+ * @param {(evt: React.ChangeEvent<HTMLInputElement>) => any} props.onChange
+ */
+function ColorInput({ onChange }) {
+  return (
+    <div
+      css={css`
+        position: relative;
+        width: 100%;
+        max-width: 320px;
+      `}
+    >
+      <label
+        htmlFor="color"
+        css={css`
+          position: absolute;
+          border: 0;
+          clip: rect(0 0 0 0);
+          height: 1px;
+          margin: -1px;
+          overflow: hidden;
+          padding: 0;
+          width: 1px;
+        `}
+      >
+        Color:
+      </label>
+      <input
+        type="text"
+        id="color"
+        onChange={onChange}
+        placeholder="hex/rgb(a)/hsl(a)"
+        css={css`
+          display: block;
+          width: 100%;
+          height: 48px;
+          color: inherit;
+          font-size: 1.5rem;
+          background: none;
+          border: 0;
+          border-bottom: 1px solid currentColor;
+          outline: none;
+        `}
+      />
+      <div
+        css={css`
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background-color: currentColor;
+          transform-origin: center bottom;
+          transform: scale(0);
+          transition: transform 120ms;
+          input:focus + & {
+            transform: scale(1);
+          }
+        `}
+      />
+    </div>
   );
 }
 
