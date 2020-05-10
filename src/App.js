@@ -3,6 +3,7 @@ import { jsx, css } from "@emotion/core";
 import React from "react";
 import { parseToRgb, readableColor, toColorString } from "polished";
 import * as colours from "./colours";
+import { Tooltip } from "@reach/tooltip";
 
 const white = {
   red: 255,
@@ -133,6 +134,60 @@ function ColorInput({ onChange }) {
   );
 }
 
+const callAll = (...fns) => (...args) => fns.map(fn => fn && fn(...args));
+
+// TODO rename to something meaningful
+function Output(props) {
+  const [copy, setCopy] = React.useState(false);
+
+  const timeoutRef = React.useRef(0);
+
+  React.useEffect(() => {
+    if (copy) {
+      timeoutRef.current = window.setTimeout(() => setCopy(false), 1000);
+      return () => window.clearTimeout(timeoutRef.current);
+    }
+  }, [copy]);
+
+  return (
+    <Tooltip
+      label={copy ? "✔️ Copied to clipboard" : "Click to copy"}
+      css={css`
+        font-size: 1rem;
+        padding: 0.5em 1em;
+        background-color: white;
+        border-radius: 0.25em;
+        border: 0;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+          0 6px 6px rgba(0, 0, 0, 0.23);
+      `}
+    >
+      <button
+        css={css`
+          display: block;
+          width: 100%;
+          min-width: 24ch;
+          height: 48px;
+          padding: 0;
+          margin: 0;
+          color: inherit;
+          font-size: 1.5rem;
+          text-align: left;
+          background: none;
+          border: 0;
+          border-bottom: 1px dashed currentColor;
+          outline: none;
+          cursor: pointer;
+        `}
+        onClick={callAll(copyToClipboard, () => setCopy(true))}
+        // prevents tooltip from closing
+        onMouseDown={evt => evt.preventDefault()}
+        {...props}
+      />
+    </Tooltip>
+  );
+}
+
 /**
  * @param {object} props
  * @param {import("./colours").Colour} props.color
@@ -153,28 +208,7 @@ function ColorNotations({ color }) {
         const format = colours[formatName];
         return (
           <li key={formatName}>
-            <button
-              css={css`
-                display: block;
-                width: 100%;
-                min-width: 24ch;
-                height: 48px;
-                padding: 0;
-                margin: 0;
-                color: inherit;
-                font-size: 1.5rem;
-                text-align: left;
-                background: none;
-                border: 0;
-                border-bottom: 1px dashed currentColor;
-                outline: none;
-                cursor: pointer;
-              `}
-              // TODO show some feedback
-              onClick={copyToClipboard}
-            >
-              {format(color)}
-            </button>
+            <Output>{format(color)}</Output>
           </li>
         );
       })}
