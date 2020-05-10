@@ -149,17 +149,62 @@ function ColorNotations({ color }) {
         line-height: 2;
       `}
     >
-      <li>
-        <code>{colours.hex(color)}</code>
-      </li>
-      <li>
-        <code>{colours.rgba(color)}</code>
-      </li>
-      <li>
-        <code>{colours.hsla(color)}</code>
-      </li>
+      {["hex", "rgba", "hsla"].map(formatName => {
+        const format = colours[formatName];
+        return (
+          <li key={formatName}>
+            <button
+              css={css`
+                display: block;
+                width: 100%;
+                min-width: 24ch;
+                height: 48px;
+                padding: 0;
+                margin: 0;
+                color: inherit;
+                font-size: 1.5rem;
+                text-align: left;
+                background: none;
+                border: 0;
+                border-bottom: 1px dashed currentColor;
+                outline: none;
+                cursor: pointer;
+              `}
+              // TODO show some feedback
+              onClick={copyToClipboard}
+            >
+              {format(color)}
+            </button>
+          </li>
+        );
+      })}
     </ul>
   );
+}
+
+function copyToClipboard(evt) {
+  const text = evt.target.textContent;
+  // Check if there is any content selected previously
+  // and store selection if found
+  const selected =
+    document.getSelection().rangeCount > 0
+      ? document.getSelection().getRangeAt(0)
+      : false;
+
+  const el = document.createElement("textarea");
+  el.value = text;
+  el.setAttribute("readonly", "");
+  el.style.position = "absolute";
+  el.style.left = "-9999px";
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand("copy");
+  document.body.removeChild(el);
+
+  if (selected) {
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(selected);
+  }
 }
 
 export default App;

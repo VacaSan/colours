@@ -19,7 +19,8 @@ body {
 }
 
 code,
-input {
+input,
+button {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
