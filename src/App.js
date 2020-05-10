@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import React from "react";
-import { parseToRgb, readableColor, rgb, toColorString } from "polished";
+import { parseToRgb, readableColor, toColorString } from "polished";
+import * as colours from "./colours";
 
 const white = {
   red: 255,
@@ -25,7 +26,7 @@ function App() {
   };
 
   const backgroundColor = toColorString(color);
-  const textColor = readableColor(rgb(color), "rgba(0,0,0,0.87)", "white");
+  const textColor = readableColor(backgroundColor, "rgba(0,0,0,0.87)", "white");
 
   React.useEffect(() => {
     document.body.style.backgroundColor = backgroundColor;
@@ -45,7 +46,8 @@ function App() {
       >
         <span role="img" aria-label="unicorn">
           🦄
-        </span>
+        </span>{" "}
+        colours.
       </h1>
       <div
         css={css`
@@ -55,9 +57,13 @@ function App() {
           flex-direction: column;
           width: 100vw;
           height: 100vh;
+          padding: 0 1rem;
         `}
       >
-        <ColorInput onChange={onChange} />
+        <div>
+          <ColorInput onChange={onChange} />
+          <ColorNotations color={color} />
+        </div>
       </div>
     </React.Fragment>
   );
@@ -72,8 +78,6 @@ function ColorInput({ onChange }) {
     <div
       css={css`
         position: relative;
-        width: 100%;
-        max-width: 320px;
       `}
     >
       <label
@@ -99,6 +103,7 @@ function ColorInput({ onChange }) {
         css={css`
           display: block;
           width: 100%;
+          min-width: 24ch;
           height: 48px;
           color: inherit;
           font-size: 1.5rem;
@@ -125,6 +130,35 @@ function ColorInput({ onChange }) {
         `}
       />
     </div>
+  );
+}
+
+/**
+ * @param {object} props
+ * @param {import("./colours").Colour} props.color
+ */
+function ColorNotations({ color }) {
+  return (
+    <ul
+      css={css`
+        width: 100%;
+        list-style: none;
+        padding: 0.5rem 0;
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 2;
+      `}
+    >
+      <li>
+        <code>{colours.hex(color)}</code>
+      </li>
+      <li>
+        <code>{colours.rgba(color)}</code>
+      </li>
+      <li>
+        <code>{colours.hsla(color)}</code>
+      </li>
+    </ul>
   );
 }
 
