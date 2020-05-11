@@ -139,11 +139,13 @@ function ColorInput({ onChange }) {
           width: 100%;
           min-width: 24ch;
           height: 2em;
+          padding: 0;
           color: inherit;
           font-size: 1.5rem;
           background: none;
           border: 0;
           border-bottom: 1px solid currentColor;
+          border-radius: 0;
           outline: none;
           ::placeholder {
             color: currentColor;
