@@ -4,6 +4,40 @@ import React from "react";
 import { parseToRgb, readableColor, toColorString } from "polished";
 import * as colours from "./colours";
 import { Tooltip } from "@reach/tooltip";
+import { ErrorBoundary } from "react-error-boundary";
+
+function FullPageErrorFallback({ error = null }) {
+  return (
+    <div
+      css={css`
+        display: flex;
+        height: 100vh;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 1rem;
+        background-color: #f55;
+      `}
+    >
+      <p
+        css={css`
+          font-size: 1.25rem;
+          font-weight: bold;
+          line-height: 2;
+          text-align: center;
+        `}
+      >
+        Whoops! Something went terribly wrong{" "}
+        <span role="img" aria-label="sad">
+          (๑◕︵◕๑)
+        </span>
+        <br />
+        Try refreshing the app.
+      </p>
+      <pre>{error?.message}</pre>
+    </div>
+  );
+}
 
 const white = {
   red: 255,
@@ -35,7 +69,7 @@ function App() {
   }, [backgroundColor, textColor]);
 
   return (
-    <React.Fragment>
+    <ErrorBoundary FallbackComponent={FullPageErrorFallback}>
       <h1
         css={css`
           position: fixed;
@@ -66,7 +100,7 @@ function App() {
           <ColorNotations color={color} />
         </div>
       </div>
-    </React.Fragment>
+    </ErrorBoundary>
   );
 }
 
