@@ -11,7 +11,24 @@ render(
   document.getElementById("root")
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.register();
+serviceWorker.register({
+  onUpdate(registration) {
+    if (window.confirm("New version available. Update now?")) {
+      const registrationWaiting = registration.waiting;
+      if (registrationWaiting) {
+        registrationWaiting.postMessage({ type: "SKIP_WAITING" });
+        registrationWaiting.addEventListener("statechange", evt => {
+          if (evt.target.state === "activated") {
+            window.location.reload();
+          }
+        });
+      }
+    }
+  },
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
+    serviceWorker.register({ immediate: true });
+  }
+});
