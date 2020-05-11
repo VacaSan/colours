@@ -75,7 +75,6 @@ function App() {
           position: fixed;
           top: 1rem;
           left: 1rem;
-          font-size: 32px;
           margin: 0;
         `}
       >
@@ -139,13 +138,17 @@ function ColorInput({ onChange }) {
           display: block;
           width: 100%;
           min-width: 24ch;
-          height: 48px;
+          height: 2em;
           color: inherit;
           font-size: 1.5rem;
           background: none;
           border: 0;
           border-bottom: 1px solid currentColor;
           outline: none;
+          ::placeholder {
+            color: currentColor;
+            opacity: 0.5;
+          }
         `}
       />
       <div
@@ -168,24 +171,11 @@ function ColorInput({ onChange }) {
   );
 }
 
-const callAll = (...fns) => (...args) => fns.map(fn => fn && fn(...args));
-
 // TODO rename to something meaningful
 function Output(props) {
-  const [copy, setCopy] = React.useState(false);
-
-  const timeoutRef = React.useRef(0);
-
-  React.useEffect(() => {
-    if (copy) {
-      timeoutRef.current = window.setTimeout(() => setCopy(false), 1000);
-      return () => window.clearTimeout(timeoutRef.current);
-    }
-  }, [copy]);
-
   return (
     <Tooltip
-      label={copy ? "✔️ Copied to clipboard" : "Click to copy"}
+      label="Click to copy"
       css={css`
         font-size: 1rem;
         padding: 0.5em 1em;
@@ -201,7 +191,7 @@ function Output(props) {
           display: block;
           width: 100%;
           min-width: 24ch;
-          height: 48px;
+          height: 2em;
           padding: 0;
           margin: 0;
           color: inherit;
@@ -213,9 +203,7 @@ function Output(props) {
           outline: none;
           cursor: pointer;
         `}
-        onClick={callAll(copyToClipboard, () => setCopy(true))}
-        // prevents tooltip from closing
-        onMouseDown={evt => evt.preventDefault()}
+        onClick={copyToClipboard}
         {...props}
       />
     </Tooltip>
