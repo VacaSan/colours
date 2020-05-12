@@ -1,32 +1,37 @@
 {
-  "name": "color",
-  "version": "1.0.1",
-  "description": "",
-  "main": "index.js",
+  "name": "color-v2",
+  "version": "1.0.0",
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@reach/tooltip": "^0.10.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "polished": "^3.6.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-error-boundary": "^2.2.1",
+    "react-scripts": "3.4.1"
+  },
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "NODE_ENV=production webpack --progress"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "babel": {
-    "presets": [
-      "env"
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "plugins": [
-      "transform-custom-element-classes",
-      "transform-es2015-classes"
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-custom-element-classes": "^0.1.0",
-    "babel-plugin-transform-es2015-classes": "^6.24.1",
-    "babel-preset-env": "^1.6.0",
-    "html-webpack-plugin": "^2.30.1",
-    "uglifyjs-webpack-plugin": "^0.4.6",
-    "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.7.1"
   }
 }
