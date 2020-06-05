@@ -3,8 +3,8 @@ import { jsx, css } from "@emotion/core";
 import React from "react";
 import { parseToRgb, readableColor, toColorString } from "polished";
 import * as colours from "./colours";
-import { Tooltip } from "@reach/tooltip";
 import { ErrorBoundary } from "react-error-boundary";
+import { useToaster } from "./context/toaster";
 
 function FullPageErrorFallback({ error = null }) {
   return (
@@ -28,13 +28,10 @@ function FullPageErrorFallback({ error = null }) {
         `}
       >
         Whoops! Something went terribly wrong{" "}
-        <span role="img" aria-label="sad">
-          (๑◕︵◕๑)
-        </span>
+        <span aria-hidden="true">(๑◕︵◕๑)</span>
         <br />
         Try refreshing the app.
       </p>
-      <pre>{error?.message}</pre>
     </div>
   );
 }
@@ -173,42 +170,71 @@ function ColorInput({ onChange }) {
   );
 }
 
-// TODO rename to something meaningful
-function Output(props) {
+function Message({ text = "Copied to clipboard!" }) {
   return (
-    <Tooltip
-      label="Click to copy"
+    <div
       css={css`
-        font-size: 1rem;
-        padding: 0.5em 1em;
-        background-color: white;
-        border-radius: 0.25em;
-        border: 0;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
-          0 6px 6px rgba(0, 0, 0, 0.23);
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        line-height: 2;
+        color: rgba(0, 0, 0, 0.87);
+        background-color: #00fa9a;
+        box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+          0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+          0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+        animation-duration: 120ms;
+        animation-name: slide-up;
+        animation-timing-function: ease-out;
+
+        @keyframes slide-up {
+          from {
+            transform: translateY(100%);
+          }
+        }
       `}
     >
-      <button
-        css={css`
-          display: block;
-          width: 100%;
-          min-width: 24ch;
-          height: 2em;
-          padding: 0;
-          margin: 0;
-          color: inherit;
-          font-size: 1.5rem;
-          text-align: left;
-          background: none;
-          border: 0;
-          border-bottom: 1px dashed currentColor;
-          outline: none;
-          cursor: pointer;
-        `}
-        onClick={copyToClipboard}
-        {...props}
-      />
-    </Tooltip>
+      {text}
+    </div>
+  );
+}
+
+// TODO rename to something meaningful
+function Output(props) {
+  const { toast } = useToaster();
+
+  const onClick = React.useCallback(
+    evt => {
+      const text = copyToClipboard(evt);
+      toast(<Message text={`"${text}" copied to clipboard!`} />);
+    },
+    [toast]
+  );
+
+  return (
+    <button
+      onClick={onClick}
+      css={css`
+        display: block;
+        width: 100%;
+        min-width: 24ch;
+        height: 2em;
+        padding: 0;
+        margin: 0;
+        color: inherit;
+        font-size: 1.5rem;
+        text-align: left;
+        background: none;
+        border: 0;
+        border-bottom: 1px dashed currentColor;
+        outline: none;
+        cursor: pointer;
+      `}
+      {...props}
+    />
   );
 }
 
@@ -263,6 +289,7 @@ function copyToClipboard(evt) {
     document.getSelection().removeAllRanges();
     document.getSelection().addRange(selected);
   }
+  return text;
 }
 
 export default App;
